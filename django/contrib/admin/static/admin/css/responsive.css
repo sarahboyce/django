@@ -237,22 +237,6 @@ input[type="submit"], button {
         padding: 7px;
     }
 
-    /* Related widget */
-
-    .related-widget-wrapper {
-        float: none;
-    }
-
-    .related-widget-wrapper-link + .selector {
-        max-width: calc(100% - 30px);
-        margin-right: 15px;
-    }
-
-    select + .related-widget-wrapper-link,
-    .related-widget-wrapper-link + .related-widget-wrapper-link {
-        margin-left: 10px;
-    }
-
     /* Selector */
 
     .selector {
@@ -694,10 +678,6 @@ input[type="submit"], button {
         flex-direction: column;
     }
 
-    .selector > * {
-        float: none;
-    }
-
     .selector-available, .selector-chosen {
         margin-bottom: 0;
         flex: 1 1 auto;
@@ -709,7 +689,6 @@ input[type="submit"], button {
 
     .selector ul.selector-chooser {
         display: block;
-        float: none;
         width: 52px;
         height: 26px;
         padding: 0 2px;
