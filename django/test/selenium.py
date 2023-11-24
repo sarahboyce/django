@@ -161,8 +161,9 @@ class SeleniumTestCase(LiveServerTestCase, metaclass=SeleniumTestCaseBase):
 
     @contextmanager
     def desktop_size(self):
-        with ChangeWindowSize(1280, 720, self.selenium):
-            yield
+        yield
+        # with ChangeWindowSize(1280, 720, self.selenium):
+        #     yield
 
     @contextmanager
     def small_screen_size(self):
