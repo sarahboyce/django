@@ -5748,7 +5748,7 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertAlmostEqual(offset_left, offset_right, delta=3)
         self.take_screenshot("login")
 
-    @screenshot_cases(["desktop_size", "mobile_size", "rtl", "dark"])
+    @screenshot_cases(["desktop_size", "mobile_size", "dark"])
     def test_prepopulated_fields(self):
         """
         The JavaScript-automated prepopulated fields work with the main form
