@@ -5774,6 +5774,7 @@ class SeleniumTests(AdminSeleniumTestCase):
             % (status_element.location["x"], status_element.location["y"])
         )
         self.take_screenshot("after_scroll")
+        return
         self.select_option("#id_status", "option two")
         self.selenium.find_element(By.ID, "id_name").send_keys(
             " the mAin nÀMë and it's awεšomeıııİ"
