@@ -5767,13 +5767,6 @@ class SeleniumTests(AdminSeleniumTestCase):
 
         # Main form ----------------------------------------------------------
         self.selenium.find_element(By.ID, "id_pubdate").send_keys("2012-02-18")
-        status_element = self.selenium.find_element(By.ID, "id_status")
-        self.take_screenshot("before_scroll")
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (status_element.location["x"], status_element.location["y"])
-        )
-        self.take_screenshot("after_scroll")
         self.select_option("#id_status", "option two")
         self.selenium.find_element(By.ID, "id_name").send_keys(
             " the mAin nÀMë and it's awεšomeıııİ"
@@ -5813,13 +5806,9 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(num_initial_select2_inputs, 4)
 
         # Add an inline
-        element = self.selenium.find_elements(
-            By.LINK_TEXT, "Add another Related prepopulated"
-        )[0]
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);" % (element.location["x"], element.location["y"])
-        )
-        element.click()
+        self.selenium.find_elements(By.LINK_TEXT, "Add another Related prepopulated")[
+            0
+        ].click()
         self.assertEqual(
             len(self.selenium.find_elements(By.CLASS_NAME, "select2-selection")),
             num_initial_select2_inputs + 2,
@@ -5853,9 +5842,7 @@ class SeleniumTests(AdminSeleniumTestCase):
         element = self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-0-status"
         )
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);" % (element.location["x"], element.location["y"])
-        )
+        self.selenium.execute_script("window.scrollTo(0, %s);" % element.location["y"])
         self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-0-pubdate"
         ).send_keys("1234-12-07")
@@ -5886,13 +5873,6 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-1-pubdate"
         ).send_keys("1981-08-22")
-        status_element = self.selenium.find_element(
-            By.ID, "id_relatedprepopulated_set-2-1-status"
-        )
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (status_element.location["x"], status_element.location["y"])
-        )
         self.select_option("#id_relatedprepopulated_set-2-1-status", "option one")
         self.selenium.find_element(
             By.ID, "id_relatedprepopulated_set-2-1-name"
@@ -5907,14 +5887,10 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(slug2, "option-one-tabular-inline-with-ignored-characters")
         # Add an inline without an initial inline.
         # The button is outside of the browser frame.
-        add_link = self.selenium.find_elements(
-            By.LINK_TEXT, "Add another Related prepopulated"
-        )[2]
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (add_link.location["x"], add_link.location["y"])
-        )
-        add_link.click()
+        self.selenium.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.selenium.find_elements(By.LINK_TEXT, "Add another Related prepopulated")[
+            2
+        ].click()
         self.assertEqual(
             len(self.selenium.find_elements(By.CLASS_NAME, "select2-selection")),
             num_initial_select2_inputs + 6,
@@ -5923,11 +5899,6 @@ class SeleniumTests(AdminSeleniumTestCase):
         # Initial inline.
         row_id = "id_relatedprepopulated_set-4-0-"
         self.selenium.find_element(By.ID, f"{row_id}pubdate").send_keys("2011-12-12")
-        status_element = self.selenium.find_element(By.ID, f"{row_id}status")
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (status_element.location["x"], status_element.location["y"])
-        )
         self.select_option(f"#{row_id}status", "option one")
         self.selenium.find_element(By.ID, f"{row_id}name").send_keys(
             " sŤāÇkeð  inline !  "
@@ -5941,22 +5912,12 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(slug1, "stacked-inline-2011-12-12")
         self.assertEqual(slug2, "option-one")
         # Add inline.
-        add_link = self.selenium.find_elements(
+        self.selenium.find_elements(
             By.LINK_TEXT,
             "Add another Related prepopulated",
-        )[3]
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (add_link.location["x"], add_link.location["y"])
-        )
-        add_link.click()
+        )[3].click()
         row_id = "id_relatedprepopulated_set-4-1-"
         self.selenium.find_element(By.ID, f"{row_id}pubdate").send_keys("1999-01-20")
-        status_element = self.selenium.find_element(By.ID, f"{row_id}status")
-        self.selenium.execute_script(
-            "window.scrollTo(%s, %s);"
-            % (status_element.location["x"], status_element.location["y"])
-        )
         self.select_option(f"#{row_id}status", "option two")
         self.selenium.find_element(By.ID, f"{row_id}name").send_keys(
             " now you haVe anöther   sŤāÇkeð  inline with a very loooong "
