@@ -1,4 +1,4 @@
-name: Screenshots
+name: Visual Regression Tests
 
 on:
   pull_request:
