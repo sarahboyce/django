@@ -55,9 +55,9 @@ jobs:
           mkdir -p ./pr
           echo $PR_NUMBER > ./pr/pr_number
           mkdir -p ./sha
-          echo SHA > ./sha/sha
+          echo $SHA > ./sha/sha
           mkdir -p ./url
-          echo URL > ./url/url
+          echo $URL > ./url/url
 
       - uses: actions/upload-artifact@v3
         with:
