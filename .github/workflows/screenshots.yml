@@ -46,9 +46,30 @@ jobs:
           name: screenshots-${{ github.event.pull_request.head.sha }}
           path: tests/screenshots/
 
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
+      - name: Save data
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          mkdir -p ./pr
+          echo $PR_NUMBER > ./pr/pr_number
+          mkdir -p ./sha
+          echo SHA > ./sha/sha
+          mkdir -p ./url
+          echo URL > ./url/url
+
+      - uses: actions/upload-artifact@v3
         with:
-          token: ${{ secrets.PAT }}
-          event-type: screenshot-comment
-          client-payload: '{"pr_number": ${{ github.event.pull_request.number }}, "sha": "${{ github.event.pull_request.head.sha }}", "date": "${{ steps.generate-screenshots.outputs.date }}", "download": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+          name: pr_number
+          path: pr/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sha
+          path: sha/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: url
+          path: url/

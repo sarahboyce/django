@@ -1,17 +1,97 @@
 name: Screenshot Comment
+
 on:
-  repository_dispatch:
-    types: [screenshot-comment]
+  workflow_run:
+    workflows: [Visual Regression Tests]
+    types:
+      - completed
 
 jobs:
-  on-success:
+  download:
     runs-on: ubuntu-latest
     steps:
+      - name: 'Download artifact'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let prArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr_number"
+            })[0];
+            let shaArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "sha"
+            })[0];
+            let urlArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "url"
+            })[0];
+            let prDownload = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: prArtifact.id,
+               archive_format: 'zip',
+            });
+            let shaDownload = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: shaArtifact.id,
+               archive_format: 'zip',
+            });
+            let urlDownload = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: urlArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr_number.zip`, Buffer.from(prDownload.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/sha.zip`, Buffer.from(shaDownload.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/url.zip`, Buffer.from(urlDownload.data));
+
+      - name: 'Unzip artifact PR'
+        run: unzip pr_number.zip
+
+      - name: 'Unzip artifact SHA'
+        run: unzip sha.zip
+
+      - name: 'Unzip artifact URL'
+        run: unzip url.zip
+
+      - uses: actions/github-script@v6
+        id: get-pr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            let fs = require('fs');
+            return Number(fs.readFileSync('./pr_number'));
+
+      - uses: actions/github-script@v6
+        id: get-sha
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            let fs = require('fs');
+            return String(fs.readFileSync('./sha'));
+
+      - uses: actions/github-script@v6
+        id: get-url
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            let fs = require('fs');
+            return String(fs.readFileSync('./url'));
+
       - name: Find comment to update
         uses: peter-evans/find-comment@v2
         id: find-comment
         with:
-          issue-number: ${{ github.event.client_payload.pr_number }}
+          issue-number: ${{ steps.get-pr.outputs.result }}
           comment-author: 'github-actions[bot]'
           body-includes: You can download the generated screenshots from the workflow artifacts.
 
@@ -20,7 +100,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.client_payload.pr_number }}
+          issue-number: ${{ steps.get-pr.outputs.result }}
           body: |
             🖼️ **Screenshots created**
 
@@ -28,7 +108,7 @@ jobs:
 
             _Please note that artifacts are only available for download for ${{ github.retention_days }} days._
 
-            - Generated screenshots for ${{ github.event.client_payload.sha }} at ${{ github.event.client_payload.date }} ([download](${{ github.event.client_payload.download }})).
+            - Generated screenshots for ${{ steps.get-sha.outputs.result }} at $(date) ([download](${{ steps.get-url.outputs.result }})).
 
       - name: Update comment
         if: steps.find-comment.outputs.comment-id != ''
@@ -37,4 +117,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |
-            - Generated screenshots for ${{ github.event.client_payload.sha }} at ${{ steps.on-success.date }} ([download](${{ github.event.client_payload.download }})).
+            - Generated screenshots for ${{ github.event.client_payload.sha }} at ${{ steps.on-success.date }} ([download](${{ steps.get-url.outputs.result }})).
