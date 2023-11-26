@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  download:
+  on-success:
     runs-on: ubuntu-latest
     steps:
       - name: 'Download artifact'
@@ -117,4 +117,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |
-            - Generated screenshots for ${{ github.event.client_payload.sha }} at ${{ steps.on-success.date }} ([download](${{ steps.get-url.outputs.result }})).
+            - Generated screenshots for ${{ github.event.client_payload.sha }} at $(date) ([download](${{ steps.get-url.outputs.result }})).
