@@ -2,7 +2,8 @@ name: Screenshot Comment
 
 on:
   workflow_run:
-    workflows: ["Visual Regression Tests"]
+    workflows:
+      - Screenshots
     types:
       - completed
 
