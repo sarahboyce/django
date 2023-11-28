@@ -465,11 +465,12 @@ class SeleniumTests(AdminSeleniumTestCase):
             for _ in range(PAGINATOR_SIZE + 1):
                 search.send_keys(Keys.ARROW_DOWN)
         # All objects are now loaded.
-        self.assertCountSeleniumElements(
-            ".select2-results__option",
-            PAGINATOR_SIZE + 11,
-            root_element=result_container,
-        )
+        with self.select2_ajax_wait():
+            self.assertCountSeleniumElements(
+                ".select2-results__option",
+                PAGINATOR_SIZE + 11,
+                root_element=result_container,
+            )
         # Limit the results with the search field.
         with self.select2_ajax_wait():
             search.send_keys("Who")
