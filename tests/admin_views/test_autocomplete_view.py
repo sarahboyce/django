@@ -431,11 +431,9 @@ class SeleniumTests(AdminSeleniumTestCase):
         from selenium.webdriver.common.keys import Keys
         from selenium.webdriver.support.ui import Select
 
-        with self.wait_page_loaded():
-            self.selenium.get(
-                self.live_server_url
-                + reverse("autocomplete_admin:admin_views_answer_add")
-            )
+        self.selenium.get(
+            self.live_server_url + reverse("autocomplete_admin:admin_views_answer_add")
+        )
         elem = self.selenium.find_element(By.CSS_SELECTOR, ".select2-selection")
         with self.select2_ajax_wait():
             elem.click()  # Open the autocomplete dropdown.
@@ -463,8 +461,8 @@ class SeleniumTests(AdminSeleniumTestCase):
         )
         search = self.selenium.find_element(By.CSS_SELECTOR, ".select2-search__field")
         # Load next page of results by scrolling to the bottom of the list.
-        for _ in range(PAGINATOR_SIZE + 1):
-            with self.select2_ajax_wait():
+        with self.select2_ajax_wait():
+            for _ in range(PAGINATOR_SIZE + 1):
                 search.send_keys(Keys.ARROW_DOWN)
         # All objects are now loaded.
         self.assertCountSeleniumElements(

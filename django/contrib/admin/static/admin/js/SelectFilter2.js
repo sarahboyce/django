@@ -29,10 +29,12 @@ Requires core.js and SelectBox.js.
             }
 
             // <div class="selector"> or <div class="selector stacked">
+            const parent_selector_div = quickElement('div');
             const selector_div = quickElement('div', from_box.parentNode);
             // Make sure the selector div is at the beginning so that the
             // add link would be displayed to the right of the widget.
-            from_box.parentNode.prepend(selector_div);
+            from_box.parentNode.prepend(parent_selector_div);
+            parent_selector_div.className = is_stacked ? 'selector stacked' : 'selector';
             selector_div.className = is_stacked ? 'selector stacked' : 'selector';
 
             // <div class="selector-available">
@@ -96,7 +98,7 @@ Requires core.js and SelectBox.js.
                     [field_name]
                 )
             );
-            
+
             const filter_selected_p = quickElement('p', selector_chosen, '', 'id', field_id + '_filter_selected');
             filter_selected_p.className = 'selector-filter';
 
@@ -115,11 +117,11 @@ Requires core.js and SelectBox.js.
 
             const to_box = quickElement('select', selector_chosen, '', 'id', field_id + '_to', 'multiple', '', 'size', from_box.size, 'name', from_box.name);
             to_box.className = 'filtered';
-            
+
             const warning_footer = quickElement('div', selector_chosen, '', 'class', 'list-footer-display');
             quickElement('span', warning_footer, '', 'id', field_id + '_list-footer-display-text');
             quickElement('span', warning_footer, ' (click to clear)', 'class', 'list-footer-display__clear');
-            
+
             const clear_all = quickElement('a', selector_chosen, gettext('Remove all'), 'title', interpolate(gettext('Click to remove all chosen %s at once.'), [field_name]), 'href', '#', 'id', field_id + '_remove_all_link');
             clear_all.className = 'selector-clearall';
 
