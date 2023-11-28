@@ -6240,6 +6240,7 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(select2_display.text, "×\nnew section")
 
     def test_inline_uuid_pk_edit_with_popup(self):
+        from selenium.webdriver import ActionChains
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support.ui import Select
 
@@ -6252,8 +6253,10 @@ class SeleniumTests(AdminSeleniumTestCase):
             "admin:admin_views_relatedwithuuidpkmodel_change",
             args=(related_with_parent.id,),
         )
-        self.selenium.get(self.live_server_url + change_url)
-        self.selenium.find_element(By.ID, "change_id_parent").click()
+        with self.wait_page_loaded():
+            self.selenium.get(self.live_server_url + change_url)
+        change_parent = self.selenium.find_element(By.ID, "change_id_parent")
+        ActionChains(self.selenium).move_to_element(change_parent).click().perform()
         self.wait_for_and_switch_to_popup()
         self.selenium.find_element(By.XPATH, '//input[@value="Save"]').click()
         self.selenium.switch_to.window(self.selenium.window_handles[0])
@@ -6286,6 +6289,7 @@ class SeleniumTests(AdminSeleniumTestCase):
         self.assertEqual(select.first_selected_option.get_attribute("value"), uuid_id)
 
     def test_inline_uuid_pk_delete_with_popup(self):
+        from selenium.webdriver import ActionChains
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support.ui import Select
 
@@ -6298,8 +6302,10 @@ class SeleniumTests(AdminSeleniumTestCase):
             "admin:admin_views_relatedwithuuidpkmodel_change",
             args=(related_with_parent.id,),
         )
-        self.selenium.get(self.live_server_url + change_url)
-        self.selenium.find_element(By.ID, "delete_id_parent").click()
+        with self.wait_page_loaded():
+            self.selenium.get(self.live_server_url + change_url)
+        delete_parent = self.selenium.find_element(By.ID, "delete_id_parent")
+        ActionChains(self.selenium).move_to_element(delete_parent).click().perform()
         self.wait_for_and_switch_to_popup()
         self.selenium.find_element(By.XPATH, '//input[@value="Yes, I’m sure"]').click()
         self.selenium.switch_to.window(self.selenium.window_handles[0])
@@ -6310,6 +6316,7 @@ class SeleniumTests(AdminSeleniumTestCase):
 
     def test_inline_with_popup_cancel_delete(self):
         """Clicking ""No, take me back" on a delete popup closes the window."""
+        from selenium.webdriver import ActionChains
         from selenium.webdriver.common.by import By
 
         parent = ParentWithUUIDPK.objects.create(title="test")
@@ -6321,8 +6328,10 @@ class SeleniumTests(AdminSeleniumTestCase):
             "admin:admin_views_relatedwithuuidpkmodel_change",
             args=(related_with_parent.id,),
         )
-        self.selenium.get(self.live_server_url + change_url)
-        self.selenium.find_element(By.ID, "delete_id_parent").click()
+        with self.wait_page_loaded():
+            self.selenium.get(self.live_server_url + change_url)
+        delete_parent = self.selenium.find_element(By.ID, "delete_id_parent")
+        ActionChains(self.selenium).move_to_element(delete_parent).click().perform()
         self.wait_for_and_switch_to_popup()
         self.selenium.find_element(By.XPATH, '//a[text()="No, take me back"]').click()
         self.selenium.switch_to.window(self.selenium.window_handles[0])
