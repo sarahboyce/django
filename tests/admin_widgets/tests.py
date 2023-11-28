@@ -1745,7 +1745,8 @@ class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
         # The field now contains the new user
         self.selenium.find_element(By.CSS_SELECTOR, "#id_user option[value=newuser]")
 
-        self.selenium.find_element(By.ID, "view_id_user").click()
+        view_user = self.selenium.find_element(By.ID, "view_id_user")
+        ActionChains(self.selenium).move_to_element(view_user).click().perform()
         self.wait_for_value("#id_username", "newuser")
         self.selenium.back()
 
@@ -1757,7 +1758,8 @@ class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
         select.select_by_index(0)
         select.select_by_value("newuser")
         # Click the Change User button to change it
-        self.selenium.find_element(By.ID, "change_id_user").click()
+        change_user = self.selenium.find_element(By.ID, "change_id_user")
+        ActionChains(self.selenium).move_to_element(change_user).click().perform()
         self.wait_for_and_switch_to_popup()
 
         username_field = self.selenium.find_element(By.ID, "id_username")
@@ -1772,7 +1774,8 @@ class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
             By.CSS_SELECTOR, "#id_user option[value=changednewuser]"
         )
 
-        self.selenium.find_element(By.ID, "view_id_user").click()
+        view_user = self.selenium.find_element(By.ID, "view_id_user")
+        ActionChains(self.selenium).move_to_element(view_user).click().perform()
         self.wait_for_value("#id_username", "changednewuser")
         self.selenium.back()
 
