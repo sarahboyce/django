@@ -1717,6 +1717,7 @@ class AdminRawIdWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
 
 class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
     def test_ForeignKey_using_to_field(self):
+        from selenium.webdriver import ActionChains
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support.ui import Select
 
@@ -1728,7 +1729,8 @@ class RelatedFieldWidgetSeleniumTests(AdminWidgetSeleniumTestCase):
 
         main_window = self.selenium.current_window_handle
         # Click the Add User button to add new
-        self.selenium.find_element(By.ID, "add_id_user").click()
+        add_user = self.selenium.find_element(By.ID, "add_id_user")
+        ActionChains(self.selenium).move_to_element(add_user).click().perform()
         self.wait_for_and_switch_to_popup()
         password_field = self.selenium.find_element(By.ID, "id_password")
         password_field.send_keys("password")

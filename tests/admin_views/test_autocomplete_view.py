@@ -464,6 +464,7 @@ class SeleniumTests(AdminSeleniumTestCase):
         with self.select2_ajax_wait():
             for _ in range(PAGINATOR_SIZE + 1):
                 search.send_keys(Keys.ARROW_DOWN)
+        self.assertTrue(result_container.is_displayed())
         # All objects are now loaded.
         self.assertCountSeleniumElements(
             ".select2-results__option",
