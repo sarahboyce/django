@@ -110,6 +110,12 @@ CSRF
 
 * ...
 
+Database backends
+~~~~~~~~~~~~~~~~~
+
+* The new ``"pool"`` option is now supported in :setting:`OPTIONS` on
+  PostgreSQL to allow using :ref:`connection pools <postgresql-pool>`.
+
 Decorators
 ~~~~~~~~~~
 
