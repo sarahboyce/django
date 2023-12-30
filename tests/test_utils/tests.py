@@ -156,7 +156,9 @@ class SkippingTestCase(SimpleTestCase):
         )
 
 
-class SkippingClassTestCase(TestCase):
+class SkippingClassTestCase(TransactionTestCase):
+    available_apps = []
+
     def test_skip_class_unless_db_feature(self):
         @skipUnlessDBFeature("__class__")
         class NotSkippedTests(TestCase):
