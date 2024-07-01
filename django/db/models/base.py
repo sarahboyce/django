@@ -48,6 +48,7 @@ from django.db.models.signals import (
     pre_save,
 )
 from django.db.models.utils import AltersData, make_model_tuple
+from django.utils.choices import flatten_choices
 from django.utils.deprecation import RemovedInDjango60Warning
 from django.utils.encoding import force_str
 from django.utils.hashable import make_hashable
@@ -1283,7 +1284,13 @@ class Model(AltersData, metaclass=ModelBase):
 
     def _get_FIELD_display(self, field):
         value = getattr(self, field.attname)
-        choices_dict = dict(make_hashable(field.flatchoices))
+        output_field = getattr(field, "output_field", None)
+        output_field_choices = getattr(output_field, "choices", None)
+        if output_field_choices is not None:
+            flat_choices = list(flatten_choices(output_field_choices))
+            choices_dict = dict(make_hashable(flat_choices))
+        else:
+            choices_dict = dict(make_hashable(field.flatchoices))
         # force_str() to coerce lazy strings.
         return force_str(
             choices_dict.get(make_hashable(value), value), strings_only=True

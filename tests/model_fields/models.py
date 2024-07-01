@@ -72,6 +72,18 @@ class WhizIterEmpty(models.Model):
     c = models.CharField(choices=iter(()), blank=True, max_length=1)
 
 
+class WhizGenerated(models.Model):
+    c = models.IntegerField(choices=Whiz.CHOICES, null=True)
+    c_copy = models.GeneratedField(
+        expression=F("c"),
+        output_field=models.IntegerField(choices=Whiz.CHOICES, null=True),
+        db_persist=True,
+    )
+
+    class Meta:
+        required_db_features = {"supports_stored_generated_columns"}
+
+
 class Choiceful(models.Model):
     class Suit(models.IntegerChoices):
         DIAMOND = 1, "Diamond"

@@ -9,4 +9,6 @@ Django 5.0.7 fixes several bugs in 5.0.6.
 Bugfixes
 ========
 
-* ...
+* Fixed a bug when calling :meth:`~django.db.models.Model.get_FOO_display` for
+  a ``GeneratedField`` with defined ``choices`` on
+  :attr:`~django.db.models.GeneratedField.output_field` (:ticket:`35566`).

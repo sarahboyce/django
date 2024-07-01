@@ -951,7 +951,9 @@ class Field(RegisterLookupMixin):
         cls._meta.add_field(self, private=private_only)
         if self.column:
             setattr(cls, self.attname, self.descriptor_class(self))
-        if self.choices is not None:
+        output_field = getattr(self, "output_field", None)
+        output_field_choices = getattr(output_field, "choices", None)
+        if self.choices is not None or output_field_choices is not None:
             # Don't override a get_FOO_display() method defined explicitly on
             # this class, but don't check methods derived from inheritance, to
             # allow overriding inherited choices. For more complex inheritance

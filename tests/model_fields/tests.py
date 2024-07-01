@@ -15,6 +15,7 @@ from .models import (
     VerboseNameField,
     Whiz,
     WhizDelayed,
+    WhizGenerated,
     WhizIter,
     WhizIterEmpty,
 )
@@ -295,6 +296,16 @@ class GetFieldDisplayTests(SimpleTestCase):
         self.assertEqual(WhizIterEmpty(c="b").c, "b")  # Invalid value
         self.assertIsNone(WhizIterEmpty(c=None).c)  # Blank value
         self.assertEqual(WhizIterEmpty(c="").c, "")  # Empty value
+
+
+class GetFieldDisplayGeneratedTests(TestCase):
+    def test_choices_and_field_display(self):
+        wg_0 = WhizGenerated.objects.create(c=0)
+        wg_1 = WhizGenerated.objects.create(c=1)
+        wg_none = WhizGenerated.objects.create(c=None)
+        self.assertEqual(wg_0.get_c_copy_display(), "Other")
+        self.assertEqual(wg_1.get_c_copy_display(), "First")
+        self.assertIsNone(wg_none.get_c_display())
 
 
 class GetChoicesTests(SimpleTestCase):
