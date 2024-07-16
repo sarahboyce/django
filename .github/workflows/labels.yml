@@ -1,0 +1,44 @@
+name: Add Label
+
+on:
+  pull_request:
+    types: [ edited, labeled, opened, reopened ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  no_ticket:
+    name: "Label whether ticket linked from title"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: kaisugi/action-regex-match@v1.0.1
+        id: regex-match
+        name: "Check title"
+        with:
+          text: ${{ github.event.pull_request.title }}
+          regex: '#[0-9]+ '
+          flags: gm
+
+      - run: gh pr edit "$NUMBER" --add-label "$LABELS"
+        name: "Ticket link not found - label with 'no-ticket'"
+        if: ${{ steps.regex-match.outputs.match == '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          LABELS: "no ticket"
+
+      - run: gh pr edit "$NUMBER" --remove-label "$LABELS"
+        name: "Ticket link found - remove label 'no-ticket'"
+        if: ${{ steps.regex-match.outputs.match != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          LABELS: "no ticket"
