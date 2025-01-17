@@ -23,7 +23,17 @@ from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils.formats import localize
 from django.utils.safestring import mark_safe
 
-from .models import Article, Car, Count, Event, EventGuide, Location, Site, Vehicle
+from .models import (
+    Article,
+    Car,
+    Count,
+    Event,
+    EventGuide,
+    Location,
+    PasswordModel,
+    Site,
+    Vehicle,
+)
 
 
 class NestedObjectsTests(TestCase):
@@ -237,6 +247,11 @@ class UtilsTests(SimpleTestCase):
             12345, models.IntegerField(), self.empty_value
         )
         self.assertEqual(display_value, "12,345")
+
+    def test_display_for_field_password_name_not_user_model(self):
+        password_field = PasswordModel._meta.get_field("password")
+        display_value = display_for_field("test", password_field, self.empty_value)
+        self.assertEqual(display_value, "test")
 
     def test_list_display_for_value(self):
         display_value = display_for_value([1, 2, 3], self.empty_value)

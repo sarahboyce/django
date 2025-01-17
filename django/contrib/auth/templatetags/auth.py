@@ -1,0 +1,28 @@
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX, identify_hasher
+from django.template import Context, Library, Template
+from django.utils.html import format_html
+from django.utils.translation import gettext
+
+register = Library()
+
+
+@register.simple_tag
+def render_password_as_hash(value):
+    if not value or value.startswith(UNUSABLE_PASSWORD_PREFIX):
+        return format_html("<p><strong>{}</strong></p>", gettext("No password set."))
+    try:
+        hasher = identify_hasher(value)
+    except ValueError:
+        return format_html(
+            "<p><strong>{}</strong></p>",
+            gettext("Invalid password format or unknown hashing algorithm."),
+        )
+
+    hashed_summary = hasher.safe_summary(value)
+    items = [(gettext(key), value_) for key, value_ in hashed_summary.items()]
+
+    tpl = Template(
+        "<p>{% for key, value in items %} "
+        "<strong>{{ key }}</strong>: <bdi>{{ value }}</bdi>{% endfor %}</p>"
+    )
+    return tpl.render(Context({"items": items}))

@@ -86,3 +86,7 @@ class VehicleMixin(Vehicle):
 
 class Car(VehicleMixin):
     pass
+
+
+class PasswordModel(models.Model):
+    password = models.CharField(max_length=200)
