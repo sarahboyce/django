@@ -138,4 +138,6 @@ Other add-ons
 =============
 
 If you have an idea for functionality to include in ``contrib``, let us know!
-Code it up, and post it to the |django-users| mailing list.
+Code it up, and post it on the `Django Forum`_.
+
+.. _Django Forum: https://forum.djangoproject.com/
