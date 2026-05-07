@@ -692,7 +692,7 @@ class AdminDetailActionsTest(TestCase):
             html=True,
         )
 
-    def test_dropdown_not_displayed_when_no_single_actions(self):
+    def test_dropdown_not_displayed_when_change_form_actions(self):
         self.client.force_login(self.superuser)
         instance = Actor.objects.create(name="David Tennant", age=45)
         response = self.client.get(
@@ -774,9 +774,9 @@ class AdminDetailActionsTest(TestCase):
         obj = ModelAction.objects.create()
         change_url = reverse("admin:admin_views_modelaction_change", args=[obj.pk])
         get_actions_overridden_msg = (
-            "Overriding get_actions() without the 'action_type' parameter is "
+            "Overriding get_actions() without the 'action_location' parameter is "
             "deprecated. Update the signature to get_actions(self, request, "
-            "action_type=ActionType.BULK_ACTION)."
+            "action_location=ActionLocation.CHANGE_LIST)."
         )
         with self.assertWarnsMessage(
             RemovedInDjango70Warning, get_actions_overridden_msg
@@ -793,8 +793,9 @@ class AdminDetailActionsTest(TestCase):
             message_warnings = [str(warning.message) for warning in warning_list]
             expected_warnings = {
                 get_actions_overridden_msg,
-                "Overriding get_action_choices() without the 'action_type' parameter "
-                "is deprecated. Update the signature to get_action_choices(self, "
-                "request, default_choices=None, action_type=ActionType.BULK_ACTION).",
+                "Overriding get_action_choices() without the 'action_location' "
+                "parameter is deprecated. Update the signature to "
+                "get_action_choices(self, request, default_choices=None, "
+                "action_location=ActionLocation.CHANGE_LIST).",
             }
             self.assertEqual(set(message_warnings), expected_warnings)

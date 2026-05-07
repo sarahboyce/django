@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from django.contrib.admin.options import ActionType
+from django.contrib.admin.options import ActionLocation
 
 
 def action(
@@ -9,7 +9,7 @@ def action(
     permissions=None,
     description=None,
     description_plural=None,
-    action_type=ActionType.BULK_ACTION,
+    location=ActionLocation.CHANGE_LIST,
 ):
     """
     Conveniently add attributes to an action function::
@@ -39,9 +39,7 @@ def action(
             func.plural_description = description_plural
         elif description is not None:
             func.plural_description = description
-        func.action_types = (
-            action_type if isinstance(action_type, Iterable) else [action_type]
-        )
+        func.locations = location if isinstance(location, Iterable) else [location]
         return func
 
     if function is None:

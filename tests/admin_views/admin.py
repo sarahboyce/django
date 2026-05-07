@@ -5,7 +5,7 @@ from wsgiref.util import FileWrapper
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import BooleanFieldListFilter
-from django.contrib.admin.options import ActionType
+from django.contrib.admin.options import ActionLocation
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth import get_permission_codename
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
@@ -425,7 +425,7 @@ class SubscriberAdmin(admin.ModelAdmin):
 
 @admin.action(
     description="External mail (Another awesome action)",
-    action_type=(ActionType.BULK_ACTION, ActionType.SINGLE_ACTION),
+    location=(ActionLocation.CHANGE_LIST, ActionLocation.CHANGE_FORM),
 )
 def external_mail(modeladmin, request, selected):
     EmailMessage(
@@ -446,7 +446,7 @@ def redirect_to(modeladmin, request, selected):
 @admin.action(
     description="Download subscription",
     description_plural="Download selected subscriptions",
-    action_type=(ActionType.BULK_ACTION, ActionType.SINGLE_ACTION),
+    location=(ActionLocation.CHANGE_LIST, ActionLocation.CHANGE_FORM),
 )
 def download(modeladmin, request, selected):
     if selected.count() > 1:
@@ -465,13 +465,13 @@ def no_perm(modeladmin, request, selected):
 
 @admin.action(
     permissions=["custom"],
-    action_type=[ActionType.SINGLE_ACTION, ActionType.BULK_ACTION],
+    location=[ActionLocation.CHANGE_LIST, ActionLocation.CHANGE_FORM],
 )
 def custom_action(modeladmin, request, selected):
     return HttpResponse(content="OK", status=200)
 
 
-@admin.action(description="Change view", action_type=ActionType.SINGLE_ACTION)
+@admin.action(description="Change view", location=ActionLocation.CHANGE_FORM)
 def change_view_only_action(modeladmin, request, selected):
     return HttpResponse(content="OK", status=200)
 
@@ -1288,7 +1288,7 @@ class OverriddenActionAdmin(admin.ModelAdmin):
     def get_action_choices(self, request, default_choices=models.BLANK_CHOICE_DASH):
         return super().get_action_choices(request, default_choices)
 
-    @admin.action(action_type=[ActionType.BULK_ACTION, ActionType.SINGLE_ACTION])
+    @admin.action(location=[ActionLocation.CHANGE_LIST, ActionLocation.CHANGE_FORM])
     def test_action(self, request, selected):
         pass
 
